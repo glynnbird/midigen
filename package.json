@@ -1,0 +1,33 @@
+{
+  "name": "midigen",
+  "version": "1.0.0",
+  "description": "MIDI generator fed from a changes feed",
+  "main": "index.js",
+  "scripts": {
+    "standard": "standard --fix",
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/glynnbird/midigen.git"
+  },
+  "keywords": [
+    "MIDI"
+  ],
+  "author": "Glynn Bird <glynn.bird@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/glynnbird/midigen/issues"
+  },
+  "homepage": "https://github.com/glynnbird/midigen#readme",
+  "dependencies": {
+    "changesreader": "^1.2.1",
+    "midi": "^1.0.0",
+    "nano": "^8.1.0",
+    "yargs": "^14.0.0"
+  },
+  "devDependencies": {
+    "standard": "^14.1.0"
+  }
+}
