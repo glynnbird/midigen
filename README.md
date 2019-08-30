@@ -16,7 +16,7 @@ npm install
 
 Run GarageBand (free from the App Store) on your Mac. Create a new project and create a new track as a "Software Instrument":
 
-![](midgen1.png)
+![](midigen1.png)
 
 ## Run
 
