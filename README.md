@@ -39,3 +39,9 @@ node index.js --url "$COUCH_URL" --database mydatabase
 ```
 
 Notes will be played as the data changes.
+
+## Parameters
+
+- `--bpm`/`-b` - number of beats per minute (Default `120`)
+- `--url`/`-u` - the URL of the CouchDB service (Default: null)
+- `--database`/`--db` - the name of the CouchDB database (Defaul: null)

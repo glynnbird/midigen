@@ -22,6 +22,10 @@ output.openVirtualPort('VP') // virtual device
 let key = 64
 let chord = chords[0]
 
+const clock = function () {
+  output.sendMessage([0xf8])
+}
+
 // play a MIDI note
 const playNote = function (note, velocity, length) {
   console.log('play note', note, velocity, length)
@@ -56,6 +60,7 @@ setInterval(function () {
 
 var args = require('yargs')
   .option('url', { alias: 'u', describe: 'COUCH_URL', default: null })
+  .option('bpm', { alias: 'b', describe: 'Beats per minute', default: 120 })
   .option('database', { alias: 'db', describe: 'CouchDB database name', default: null })
   .help('help')
   .argv
@@ -75,11 +80,21 @@ if (args.url && args.database) {
   })
 } else {
   console.log('playing random notes every 250ms')
-  // play a note every 250ms
+  // play a note every beat
   setInterval(function () {
     const n = pickNote(chord)
     const velocity = 50 + Math.floor(Math.random() * 60)
     const length = 100 + Math.floor(Math.random() * 4000)
     playNote(n, velocity, length)
-  }, 250)
+  }, 1000 / (args.bpm / 60))
 }
+
+// midi clock
+console.log('BPM', args.bpm)
+const beatsPerSecond = args.bpm / 60
+const beatInterval = 1 / beatsPerSecond
+const quarterNoteMS = 1000 * beatInterval / 4
+console.log('Beat interval (ms)', quarterNoteMS)
+setInterval(function () {
+  clock()
+}, quarterNoteMS)
