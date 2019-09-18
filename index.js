@@ -19,7 +19,7 @@ const output = new midi.output() // eslint-disable-line
 output.openVirtualPort('VP') // virtual device
 
 // the current key
-let key = 64
+let key = 32
 let chord = chords[0]
 
 const clock = function () {
@@ -40,7 +40,7 @@ const playNote = function (note, velocity, length) {
 }
 
 const changeKey = function () {
-  key = 30 + Math.floor(Math.random() * 50)
+  key = 15 + Math.floor(Math.random() * 25)
 }
 const changeChord = function () {
   chord = chords[Math.floor(Math.random() * chords.length)]
