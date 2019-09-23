@@ -31,6 +31,11 @@ const playNote = function (note, velocity, length, channel) {
   }, length)
 }
 
+// silence all notes on a channel
+const allNotesOff = function (channel) {
+  output.sendMessage([176 + channel, 123, 0])
+}
+
 const changeKey = function () {
   key = 30 + Math.floor(Math.random() * 50)
 }
@@ -69,6 +74,9 @@ const output = new midi.output() // eslint-disable-line
 
 // virtual port - shows up in GarageBand
 output.openVirtualPort('VP') // virtual device
+allNotesOff(0)
+allNotesOff(1)
+allNotesOff(2)
 
 if (args.url && args.database) {
   console.log('Listening for changes on ', args.database)
