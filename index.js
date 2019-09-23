@@ -9,17 +9,8 @@ const chords = [
   [0, 4, 7, 8] // 6th
 ]
 
-// midi setup
-const output = new midi.output() // eslint-disable-line
-
-// doesn't work on Mac where the USB ports are locked down
-// output.getPortName(0) // Output to physical device
-
-// virtual port - shows up in GarageBand
-output.openVirtualPort('VP') // virtual device
-
 // the current key
-let key = 32
+let key = 64
 let chord = chords[0]
 
 const clock = function () {
@@ -27,20 +18,21 @@ const clock = function () {
 }
 
 // play a MIDI note
-const playNote = function (note, velocity, length) {
-  console.log('play note', note, velocity, length)
+const playNote = function (note, velocity, length, channel) {
+  console.log('play note', channel, note, velocity, length)
   // note start
   const n = key + note
-  output.sendMessage([144, n, velocity])
+  // 10010000 (for channel 0) 10010001 (for channel 1)
+  output.sendMessage([144 + channel, n, velocity])
 
   setTimeout(function () {
     // note end
-    output.sendMessage([128, n, 0])
+    output.sendMessage([128 + channel, n, 0])
   }, length)
 }
 
 const changeKey = function () {
-  key = 15 + Math.floor(Math.random() * 25)
+  key = 30 + Math.floor(Math.random() * 50)
 }
 const changeChord = function () {
   chord = chords[Math.floor(Math.random() * chords.length)]
@@ -65,6 +57,19 @@ var args = require('yargs')
   .help('help')
   .argv
 
+// midi setup
+console.log('opening 3 midi ports')
+const output = new midi.output() // eslint-disable-line
+
+// output.openPort(1)
+
+// doesn't work on Mac where the USB ports are locked down
+// console.log('MIDI channel', args.midi)
+// output.getPortName(args.midi) // Output to physical device
+
+// virtual port - shows up in GarageBand
+output.openVirtualPort('VP') // virtual device
+
 if (args.url && args.database) {
   console.log('Listening for changes on ', args.database)
   const nano = require('nano')(args.url)
@@ -74,7 +79,15 @@ if (args.url && args.database) {
     const n = pickNote(chord)
     const velocity = 50 + Math.floor(Math.random() * 60)
     const length = 100 + Math.floor(Math.random() * 4000)
-    playNote(n, velocity, length)
+    const rev = parseInt(c.changes[0].rev.split('-')[0])
+
+    if (rev > 1) {
+      playNote(n, velocity, length, 2)
+    } else if (c.deleted) {
+      playNote(n, velocity, length, 1)
+    } else {
+      playNote(n, velocity, length, 0)
+    }
   }).on('error', (e) => {
     console.error('error', e)
   })
@@ -85,7 +98,7 @@ if (args.url && args.database) {
     const n = pickNote(chord)
     const velocity = 50 + Math.floor(Math.random() * 60)
     const length = 100 + Math.floor(Math.random() * 4000)
-    playNote(n, velocity, length)
+    playNote(n, velocity, length, Math.floor(Math.random() * 3))
   }, 1000 / (args.bpm / 60))
 }
 
